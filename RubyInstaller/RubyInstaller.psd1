@@ -21,7 +21,7 @@
   Copyright = '(c) 2019 Glenn Sarti. All rights reserved.'
 
   # Description of the functionality provided by this module
-  Description = 'An opiniated module to help install Ruby on Windows. (Not supported on 32bit OS)'
+  Description = 'An opinionated module to help install Ruby on Windows. (Not supported on 32bit OS)'
 
   # Minimum version of the Windows PowerShell engine required by this module
   PowerShellVersion = '5.0'

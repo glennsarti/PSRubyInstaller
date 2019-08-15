@@ -1,4 +1,4 @@
-## How to do a release
+# How to do a release
 
 1. Generate and merge a release prep
 
@@ -35,7 +35,7 @@
 
     `.\build.ps1`
 
-7. Enure the version is correct in the `/Output/RubyInstaller/RubyInstaller.psd1` file
+7. Ensure the version is correct in the `/Output/RubyInstaller/RubyInstaller.psd1` file
 
 8. Publish the module to the Gallery
 
