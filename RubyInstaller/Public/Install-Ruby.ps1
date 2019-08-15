@@ -160,9 +160,15 @@ Function Install-Ruby {
 gem: --no-document
 "@ | Set-Content -Encoding Ascii -Path $tempRC -Force -Confirm:$false
 
+        $extraGemUpdate = ''
+        if ($rubyVersion -match '^(?:1\.|2\.[012]\.)') {
+          # Rubygems 3.x requires Ruby 2.3.0, so pin to latest in 2.x
+          $extraGemUpdate += ' 2.7.10'
+        }
+
         Write-Progress -Activity $ProgressActivity -CurrentOperation "Updating System Gems for Ruby ${rubyVersionString} (via HTTP)"
         Write-Verbose "Updating system gems (via HTTP)..."
-        #& gem update --system --config-file $tempRC
+        & gem update --system --config-file $tempRC $extraGemUpdate
         Remove-Item -Path $tempRC -Force -Confirm:$false | Out-Null
 
         # Install bundler if it's not already there
@@ -177,7 +183,11 @@ gem: --no-document
           Write-Progress -Activity $ProgressActivity -CurrentOperation "Installing Bundler"
           Write-Verbose "Installing bundler..."
           if ($rubyVersion -match '^1\.') {
-            & gem install bundler --no-ri --no-rdoc
+            # Bundler 2.x requires Ruby 2.3.0, so pin to latest in 1.x
+            & gem install bundler --no-ri --no-rdoc --version 1.17.3
+          } elseif ($rubyVersion -match '2\.[012]\.') {
+            # Bundler 2.x requires Ruby 2.3.0, so pin to latest in 1.x
+            & gem install bundler --no-document --force --version 1.17.3
           } else {
             & gem install bundler --no-document --force
           }
