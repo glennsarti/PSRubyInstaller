@@ -20,10 +20,10 @@ Function Install-Ruby {
     # Remember and fiddle with the allowed protocols for web requests
     $CurrentProtocol = [System.Net.ServicePointManager]::SecurityProtocol
     # Workaround for https://github.com/majkinetor/au/issues/142
-    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor
-      768 -bor
-      [System.Net.SecurityProtocolType]::Tls -bor
-      [System.Net.SecurityProtocolType]::Ssl3
+    [System.Net.ServicePointManager]::SecurityProtocol = `
+      [System.Net.SecurityProtocolType]::Tls11 -bor
+      [System.Net.SecurityProtocolType]::Tls12 -bor
+      [System.Net.SecurityProtocolType]::Tls
 
     try {
       # Preflight checks...
@@ -34,9 +34,9 @@ Function Install-Ruby {
       # Opinionated Ruby List (mainly for Puppet Developers)
       # TODO: Update for 2.5, 2.4 and 2.6? Drop 2.1?
       $rubyList = @(
-        '2.1.9', '2.1.9 (x64)',
         '2.4.4-2 (x86)', '2.4.4-2 (x64)',
-        '2.5.1-2 (x86)', '2.5.1-2 (x64)'
+        '2.5.1-2 (x86)', '2.5.1-2 (x64)',
+        '2.7.2-1 (x86)', '2.7.2-1 (x64)'
       )
       $ChocolateyTools = Get-ChocolateyTools
       $devKit2_64 = Join-Path -Path $ChocolateyTools -ChildPath 'DevKit2-x64'
@@ -103,9 +103,10 @@ Function Install-Ruby {
             # 32bit 'https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-2.5.1-1/rubyinstaller-2.5.1-1-x86.7z'
             # 64bit 'https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-2.5.1-1/rubyinstaller-2.5.1-1-x64.7z'
             if ($rubyIs64) {
-              $rubyURL = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-${rubyVersion}/rubyinstaller-${rubyVersion}-x64.7z"
+              $Ref = Get-FirstGitHubRef -Owner 'oneclick' -Repo 'rubyinstaller2' -Refs "rubyinstaller-${rubyVersion}","RubyInstaller-${rubyVersion}"
+              $rubyURL = "https://github.com/oneclick/rubyinstaller2/releases/download/$Ref/rubyinstaller-${rubyVersion}-x64.7z"
             } else {
-              $rubyURL = "https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-${rubyVersion}/rubyinstaller-${rubyVersion}-x86.7z"
+              $rubyURL = "https://github.com/oneclick/rubyinstaller2/releases/download/$Ref/rubyinstaller-${rubyVersion}-x86.7z"
             }
             $RIDKDevKit = $true
           }
